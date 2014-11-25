@@ -5,3 +5,10 @@ authors = [ "viraptor@gmail.com" ]
 repository = "https://github.com/viraptor/coinaddress"
 keywords = [ "bitcoin", "litecoin", "address", "validate" ]
 license = "MIT"
+
+[lib]
+name = "coinaddress"
+path = "coinaddress.rs"
+test = true
+doctest = true
+bench = true
