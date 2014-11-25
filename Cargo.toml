@@ -1,0 +1,7 @@
+[package]
+name = "coinaddress"
+version = "1.0.0"
+authors = [ "viraptor@gmail.com" ]
+repository = "https://github.com/viraptor/coinaddress"
+keywords = [ "bitcoin", "litecoin", "address", "validate" ]
+license = [ "MIT" ]
