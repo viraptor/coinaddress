@@ -1,3 +1,5 @@
 coinaddress
 *.sw[op]
 *.rlib
+target
+Cargo.lock
