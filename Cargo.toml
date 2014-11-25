@@ -14,4 +14,4 @@ doctest = true
 bench = true
 
 [dependencies.num]
-git = https://github.com/rust-lang/num.git
+git = "https://github.com/rust-lang/num.git"
