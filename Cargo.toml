@@ -12,3 +12,6 @@ path = "coinaddress.rs"
 test = true
 doctest = true
 bench = true
+
+[dependencies.num]
+git = https://github.com/rust-lang/num.git
