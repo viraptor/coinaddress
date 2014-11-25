@@ -10,8 +10,8 @@ extern crate rustc;
 extern crate test;
 
 use num::bigint::BigUint;
+use num::Zero;
 use std::num::{from_uint, from_int};
-use std::num::Zero;
 use rustc::util::sha2::{Sha256, Digest};
 
 #[deriving(PartialEq, Show)]
