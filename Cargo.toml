@@ -10,7 +10,6 @@ license = "MIT"
 name = "coinaddress"
 path = "coinaddress.rs"
 test = true
-doctest = true
 bench = true
 
 [dependencies.num]
