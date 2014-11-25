@@ -16,12 +16,19 @@ use rustc::util::sha2::{Sha256, Digest};
 
 #[deriving(PartialEq, Show)]
 pub enum ValidationError {
+    /// Given address is too short to be valid
     TooShort,
+    /// Encoding is not a valid base58
     InvalidEncoding,
+    /// Computed hash does not match the embedded one
     HashMismatch,
 
     // currency specific
+    /// This address is not a bitcoin address (testnet or real).
+    /// May happen when attempting to validate btc address
     NotBitcoin,
+    /// This address is not a litecoin address.
+    /// May happen when attempting to validate ltc address
     NotLitecoin,
 }
 
@@ -77,8 +84,8 @@ fn double_sha256(chunk: &[u8]) -> Vec<u8> {
     hash2.result_bytes()
 }
 
-/// Validate provided generic base58 hash
-/// Returning the hash version/type if correct and an error otherwise
+/// Validate provided generic base58 hash.
+/// Returns the hash version/type if correct and an error otherwise.
 pub fn validate_base58_hash(addr: &str) -> Result<uint, ValidationError> {
     if addr.len() == 0 {
         return Err(TooShort);
@@ -101,8 +108,8 @@ pub fn validate_base58_hash(addr: &str) -> Result<uint, ValidationError> {
     }
 }
 
-/// Validate bitcoin address checksum
-/// Returning the hash version/type if correct and an error otherwise
+/// Validate bitcoin address checksum.
+/// Returns the hash version/type if correct and an error otherwise.
 pub fn validate_btc_address(addr: &str) -> Result<uint, ValidationError> {
     match validate_base58_hash(addr) {
         Ok(0) => Ok(0),      // real address
@@ -113,8 +120,8 @@ pub fn validate_btc_address(addr: &str) -> Result<uint, ValidationError> {
     }
 }
 
-/// Validate litecoin address checksum
-/// Returning the hash version/type if correct and an error otherwise
+/// Validate litecoin address checksum.
+/// Returns the hash version/type if correct and an error otherwise.
 pub fn validate_ltc_address(addr: &str) -> Result<uint, ValidationError> {
     match validate_base58_hash(addr) {
         Ok(48) => Ok(48),      // real address
