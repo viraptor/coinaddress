@@ -43,7 +43,7 @@ fn decode_base58(bc: &str) -> Option<BigUint> {
                 return None
             },
             Some(x) => {
-                res = res * b58 + from_uint(x).unwrap();
+                res = res * &b58 + from_uint::<BigUint>(x).unwrap();
             }
         }
     }
@@ -56,8 +56,8 @@ fn bigint_to_bytes(n: BigUint) -> Vec<u8> {
     let b256: BigUint = from_int(256).unwrap();
 
     while !tmp.is_zero() {
-        res.insert(0, (tmp % b256).to_u8().unwrap());
-        tmp = tmp / b256;
+        res.insert(0, (&tmp % &b256).to_u8().unwrap());
+        tmp = tmp / &b256;
     }
 
     if res.len() == 0 {
