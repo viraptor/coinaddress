@@ -1,6 +1,5 @@
 #![crate_type = "lib"]
 #![crate_name = "coinaddress"]
-#![license = "MIT"]
 
 //! Functions for validating the base58 hash checksums, including specifically
 //! the bitcoin and litecoin addresses.
