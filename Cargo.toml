@@ -18,4 +18,4 @@ test = true
 bench = true
 
 [dependencies]
-num = "*"
+num = ">= 0.1.3"
