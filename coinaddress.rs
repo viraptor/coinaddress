@@ -10,10 +10,10 @@ extern crate test;
 
 use num::bigint::BigUint;
 use num::Zero;
-use std::num::{from_uint, from_int};
+use std::num::{from_uint, from_int, ToPrimitive};
 use rustc::util::sha2::{Sha256, Digest};
 
-#[deriving(PartialEq, Show, Copy)]
+#[derive(PartialEq, Show, Copy)]
 pub enum ValidationError {
     /// Given address is too short to be valid
     TooShort,
@@ -67,7 +67,7 @@ fn bigint_to_bytes(n: BigUint) -> Vec<u8> {
     res
 }
 
-fn pad_to(v: Vec<u8>, len: uint) -> Vec<u8> {
+fn pad_to(v: Vec<u8>, len: usize) -> Vec<u8> {
     let mut tmp: Vec<u8> = v;
     while tmp.len() < len {
         tmp.insert(0, 0)
@@ -85,7 +85,7 @@ fn double_sha256(chunk: &[u8]) -> Vec<u8> {
 
 /// Validate provided generic base58 hash.
 /// Returns the hash version/type if correct and an error otherwise.
-pub fn validate_base58_hash(addr: &str) -> Result<uint, ValidationError> {
+pub fn validate_base58_hash(addr: &str) -> Result<usize, ValidationError> {
     if addr.len() == 0 {
         return Err(ValidationError::TooShort);
     }
@@ -101,7 +101,7 @@ pub fn validate_base58_hash(addr: &str) -> Result<uint, ValidationError> {
     let short_hash = hash.slice(0, 4);
     let known = padded.slice(padded.len()-4, padded.len());
     if short_hash.as_slice() == known {
-        Ok(padded[0].to_uint().unwrap())
+        Ok(padded[0] as usize)
     } else {
         Err(ValidationError::HashMismatch)
     }
@@ -109,7 +109,7 @@ pub fn validate_base58_hash(addr: &str) -> Result<uint, ValidationError> {
 
 /// Validate bitcoin address checksum.
 /// Returns the hash version/type if correct and an error otherwise.
-pub fn validate_btc_address(addr: &str) -> Result<uint, ValidationError> {
+pub fn validate_btc_address(addr: &str) -> Result<usize, ValidationError> {
     match validate_base58_hash(addr) {
         Ok(0) => Ok(0),      // real address
         Ok(5) => Ok(5),      // script hash
@@ -121,7 +121,7 @@ pub fn validate_btc_address(addr: &str) -> Result<uint, ValidationError> {
 
 /// Validate litecoin address checksum.
 /// Returns the hash version/type if correct and an error otherwise.
-pub fn validate_ltc_address(addr: &str) -> Result<uint, ValidationError> {
+pub fn validate_ltc_address(addr: &str) -> Result<usize, ValidationError> {
     match validate_base58_hash(addr) {
         Ok(48) => Ok(48),      // real address
         Ok(111) => Ok(111),    // testnet address
