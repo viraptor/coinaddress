@@ -13,7 +13,7 @@ use num::Zero;
 use std::num::{from_uint, from_int, ToPrimitive};
 use rustc::util::sha2::{Sha256, Digest};
 
-#[derive(PartialEq, Show, Copy)]
+#[derive(PartialEq, Debug, Copy)]
 pub enum ValidationError {
     /// Given address is too short to be valid
     TooShort,
