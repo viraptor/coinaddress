@@ -137,7 +137,7 @@ fn test_decoding() {
     assert_eq!(decode_base58("1"), from_int(0));
     assert_eq!(decode_base58("1AaZz"), from_int(0x1C8485));
     assert_eq!(decode_base58("AO"), None);
-    assert_eq!(decode_base58("1AGNa15ZQXAZUgFiqJ2i7Z2DPU2J6hW62i"), from_str_radix("65A16059864A2FDBC7C99A4723A8395BC6F188EBC046B2FF", 16));
+    assert_eq!(decode_base58("1AGNa15ZQXAZUgFiqJ2i7Z2DPU2J6hW62i"), from_str_radix("65A16059864A2FDBC7C99A4723A8395BC6F188EBC046B2FF", 16).ok());
 }
 
 #[test]
