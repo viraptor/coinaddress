@@ -97,9 +97,9 @@ pub fn validate_base58_hash(addr: &str) -> Result<usize, ValidationError> {
     let bytes = bigint_to_bytes(big);
     let padded = pad_to(bytes, 25);
 
-    let hash = double_sha256(padded.slice(0, padded.len() - 4));
-    let short_hash = hash.slice(0, 4);
-    let known = padded.slice(padded.len()-4, padded.len());
+    let hash = double_sha256(&padded[0 .. padded.len() - 4]);
+    let short_hash = &hash[0..4];
+    let known = &padded[padded.len()-4 .. padded.len()];
     if short_hash.as_slice() == known {
         Ok(padded[0] as usize)
     } else {
