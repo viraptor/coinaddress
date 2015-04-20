@@ -53,7 +53,7 @@ fn decode_base58(bc: &str) -> Option<BigUint> {
     Some(res)
 }
 
-fn bigint_to_bytes(n: BigUint) -> Vec<u8> {
+fn biguint_to_bytes(n: BigUint) -> Vec<u8> {
     let mut res: Vec<u8> = Vec::new();
     let mut tmp = n;
     let b256: BigUint = 256.to_biguint().unwrap();
@@ -97,7 +97,7 @@ pub fn validate_base58_hash(addr: &str) -> Result<usize, ValidationError> {
         None => return Err(ValidationError::InvalidEncoding),
         Some(x) => x
     };
-    let bytes = bigint_to_bytes(big);
+    let bytes = biguint_to_bytes(big);
     let padded = pad_to(bytes, 25);
 
     let hash = double_sha256(&padded[0 .. padded.len() - 4]);
@@ -145,9 +145,9 @@ fn test_decoding() {
 
 #[test]
 fn test_to_bytes() {
-    assert_eq!(bigint_to_bytes(Zero::zero()), vec!(0));
-    assert_eq!(bigint_to_bytes(1.to_biguint().unwrap()), vec!(1));
-    assert_eq!(bigint_to_bytes(256.to_biguint().unwrap()), vec!(1, 0));
+    assert_eq!(biguint_to_bytes(Zero::zero()), vec!(0));
+    assert_eq!(biguint_to_bytes(1.to_biguint().unwrap()), vec!(1));
+    assert_eq!(biguint_to_bytes(256.to_biguint().unwrap()), vec!(1, 0));
 }
 
 #[test]
