@@ -4,6 +4,9 @@
 //! Functions for validating the base58 hash checksums, including specifically
 //! the bitcoin and litecoin addresses.
 
+#![feature(test)]
+#![feature(rustc_private)]
+
 extern crate num;
 extern crate rustc;
 extern crate test;
