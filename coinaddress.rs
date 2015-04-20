@@ -11,9 +11,9 @@ extern crate num;
 extern crate rustc;
 extern crate test;
 
-use num::bigint::BigUint;
+use num::bigint::{ToBigUint,BigUint};
+use num::traits::ToPrimitive;
 use num::Zero;
-use std::num::{from_uint, from_int, ToPrimitive};
 use rustc::util::sha2::{Sha256, Digest};
 
 #[derive(PartialEq, Debug)]
@@ -38,7 +38,7 @@ static BASE58_CHARS: &'static str = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghij
 
 fn decode_base58(bc: &str) -> Option<BigUint> {
     let mut res: BigUint = Zero::zero();
-    let b58: BigUint = from_int(58).unwrap();
+    let b58: BigUint = 58.to_biguint().unwrap();
 
     for c in bc.chars() {
         match BASE58_CHARS.find(c) {
@@ -46,7 +46,7 @@ fn decode_base58(bc: &str) -> Option<BigUint> {
                 return None
             },
             Some(x) => {
-                res = res * &b58 + from_uint::<BigUint>(x).unwrap();
+                res = res * &b58 + x.to_biguint().unwrap();
             }
         }
     }
@@ -56,7 +56,7 @@ fn decode_base58(bc: &str) -> Option<BigUint> {
 fn bigint_to_bytes(n: BigUint) -> Vec<u8> {
     let mut res: Vec<u8> = Vec::new();
     let mut tmp = n;
-    let b256: BigUint = from_int(256).unwrap();
+    let b256: BigUint = 256.to_biguint().unwrap();
 
     while !tmp.is_zero() {
         res.insert(0, (&tmp % &b256).to_u8().unwrap());
@@ -135,19 +135,19 @@ pub fn validate_ltc_address(addr: &str) -> Result<usize, ValidationError> {
 
 #[test]
 fn test_decoding() {
-    use std::num::from_str_radix;
+    use num::traits::Num;
 
-    assert_eq!(decode_base58("1"), from_int(0));
-    assert_eq!(decode_base58("1AaZz"), from_int(0x1C8485));
+    assert_eq!(decode_base58("1"), 0.to_biguint());
+    assert_eq!(decode_base58("1AaZz"), 0x1C8485.to_biguint());
     assert_eq!(decode_base58("AO"), None);
-    assert_eq!(decode_base58("1AGNa15ZQXAZUgFiqJ2i7Z2DPU2J6hW62i"), from_str_radix("65A16059864A2FDBC7C99A4723A8395BC6F188EBC046B2FF", 16).ok());
+    assert_eq!(decode_base58("1AGNa15ZQXAZUgFiqJ2i7Z2DPU2J6hW62i"), BigUint::from_str_radix("65A16059864A2FDBC7C99A4723A8395BC6F188EBC046B2FF", 16).ok());
 }
 
 #[test]
 fn test_to_bytes() {
     assert_eq!(bigint_to_bytes(Zero::zero()), vec!(0));
-    assert_eq!(bigint_to_bytes(from_int(1).unwrap()), vec!(1));
-    assert_eq!(bigint_to_bytes(from_int(256).unwrap()), vec!(1, 0));
+    assert_eq!(bigint_to_bytes(1.to_biguint().unwrap()), vec!(1));
+    assert_eq!(bigint_to_bytes(256.to_biguint().unwrap()), vec!(1, 0));
 }
 
 #[test]
