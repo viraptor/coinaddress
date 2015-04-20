@@ -82,7 +82,7 @@ fn double_sha256(chunk: &[u8]) -> Vec<u8> {
     let mut hash = Sha256::new();
     hash.input(chunk);
     let mut hash2 = Sha256::new();
-    hash2.input(hash.result_bytes().as_slice());
+    hash2.input(&hash.result_bytes()[..]);
     hash2.result_bytes()
 }
 
@@ -103,7 +103,7 @@ pub fn validate_base58_hash(addr: &str) -> Result<usize, ValidationError> {
     let hash = double_sha256(&padded[0 .. padded.len() - 4]);
     let short_hash = &hash[0..4];
     let known = &padded[padded.len()-4 .. padded.len()];
-    if short_hash.as_slice() == known {
+    if &short_hash[..] == known {
         Ok(padded[0] as usize)
     } else {
         Err(ValidationError::HashMismatch)
