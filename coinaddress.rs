@@ -5,16 +5,15 @@
 //! the bitcoin and litecoin addresses.
 
 #![feature(test)]
-#![feature(rustc_private)]
 
 extern crate num;
-extern crate rustc;
+extern crate sha2;
 extern crate test;
 
 use num::bigint::{ToBigUint,BigUint};
 use num::traits::ToPrimitive;
 use num::Zero;
-use rustc::util::sha2::{Sha256, Digest};
+use sha2::{Sha256, Digest};
 
 #[derive(PartialEq, Debug)]
 pub enum ValidationError {
@@ -79,11 +78,11 @@ fn pad_to(v: Vec<u8>, len: usize) -> Vec<u8> {
 }
 
 fn double_sha256(chunk: &[u8]) -> Vec<u8> {
-    let mut hash = Sha256::new();
+    let mut hash = Sha256::default();
     hash.input(chunk);
-    let mut hash2 = Sha256::new();
-    hash2.input(&hash.result_bytes()[..]);
-    hash2.result_bytes()
+    let mut hash2 = Sha256::default();
+    hash2.input(&hash.result()[..]);
+    hash2.result().into_iter().collect()
 }
 
 /// Validate provided generic base58 hash.
