@@ -13,7 +13,6 @@ the bitcoin and litecoin addresses.
 
 [lib]
 name = "coinaddress"
-path = "coinaddress.rs"
 test = true
 bench = true
 

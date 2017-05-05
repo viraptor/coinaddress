@@ -1,14 +1,8 @@
-#![crate_type = "lib"]
-#![crate_name = "coinaddress"]
-
 //! Functions for validating the base58 hash checksums, including specifically
 //! the bitcoin and litecoin addresses.
 
-#![feature(test)]
-
 extern crate num;
 extern crate sha2;
-extern crate test;
 
 use num::bigint::{ToBigUint,BigUint};
 use num::traits::ToPrimitive;
@@ -132,51 +126,3 @@ pub fn validate_ltc_address(addr: &str) -> Result<usize, ValidationError> {
     }
 }
 
-#[test]
-fn test_decoding() {
-    use num::traits::Num;
-
-    assert_eq!(decode_base58("1"), 0.to_biguint());
-    assert_eq!(decode_base58("1AaZz"), 0x1C8485.to_biguint());
-    assert_eq!(decode_base58("AO"), None);
-    assert_eq!(decode_base58("1AGNa15ZQXAZUgFiqJ2i7Z2DPU2J6hW62i"), BigUint::from_str_radix("65A16059864A2FDBC7C99A4723A8395BC6F188EBC046B2FF", 16).ok());
-}
-
-#[test]
-fn test_to_bytes() {
-    assert_eq!(biguint_to_bytes(Zero::zero()), vec!(0));
-    assert_eq!(biguint_to_bytes(1.to_biguint().unwrap()), vec!(1));
-    assert_eq!(biguint_to_bytes(256.to_biguint().unwrap()), vec!(1, 0));
-}
-
-#[test]
-fn test_validate_hash() {
-    assert_eq!(validate_base58_hash("17VZNX1SN5NtKa8UQFxwQbFeFc3iqRYhem"), Ok(0));
-    assert_eq!(validate_base58_hash("mipcBbFg9gMiCh81Kj8tqqdgoZub1ZJRfn"), Ok(111));
-    assert_eq!(validate_base58_hash("17VZNX1SN5NtKa8UQFxwQbFeFc3iqRYheX"), Err(ValidationError::HashMismatch));
-    assert_eq!(validate_base58_hash("17VZNX1SN5NtKa8UQFxwQbFeFc3iqRYh  "), Err(ValidationError::InvalidEncoding));
-    assert_eq!(validate_base58_hash("1"), Err(ValidationError::HashMismatch));
-    assert_eq!(validate_base58_hash(""), Err(ValidationError::TooShort));
-}
-
-#[test]
-fn test_validate_btc_address() {
-    assert_eq!(validate_btc_address("17VZNX1SN5NtKa8UQFxwQbFeFc3iqRYhem"), Ok(0));
-    assert_eq!(validate_btc_address("3EktnHQD7RiAE6uzMj2ZifT9YgRrkSgzQX"), Ok(5));
-    assert_eq!(validate_btc_address("mipcBbFg9gMiCh81Kj8tqqdgoZub1ZJRfn"), Ok(111));
-    assert_eq!(validate_btc_address("LRELGDJyeCPRDXz4Dh1kWorMN9hTBB7CEz"), Err(ValidationError::NotBitcoin));
-}
-
-#[test]
-fn test_validate_ltc_address() {
-    assert_eq!(validate_ltc_address("LRELGDJyeCPRDXz4Dh1kWorMN9hTBB7CEz"), Ok(48));
-    assert_eq!(validate_ltc_address("muen9zszN6rVwXaFw48xh6YkdUSjJcfzek"), Ok(111));
-    assert_eq!(validate_ltc_address("17VZNX1SN5NtKa8UQFxwQbFeFc3iqRYhem"), Err(ValidationError::NotLitecoin));
-}
-
-#[bench]
-fn bench_validate_hash(b: &mut test::Bencher) {
-    b.iter(|| {
-        validate_base58_hash("17VZNX1SN5NtKa8UQFxwQbFeFc3iqRYhem")
-    })
-}
